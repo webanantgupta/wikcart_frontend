@@ -48,7 +48,53 @@ const API_URL = import.meta.env.VITE_API_URL;
   // };
 
   // Google Success Handler
- const handleSubmit = async (e) => {
+//  const handleSubmit = async (e) => {
+//   e.preventDefault();
+
+//   const newErrors = validateForm();
+
+//   if (Object.keys(newErrors).length > 0) {
+//     setErrors(newErrors);
+//     return;
+//   }
+
+//   setLoading(true);
+
+//   try {
+//     const response = await axios.post(
+//       `${API_URL}/api/v10/create-vendor`,
+//       {
+//         name,
+//         email,
+//         password,
+//       }
+//     );
+
+//     console.log(response.data);
+
+//     if (response.data.success) {
+//       alert("Vendor registered successfully");
+
+//       setName("");
+//       setEmail("");
+//       setPassword("");
+
+//       navigate("/dashboard");
+//     }
+//   } catch (error) {
+//     console.error(error);
+
+//     setErrors({
+//       submit:
+//         error.response?.data?.message ||
+//         "Signup failed. Please try again.",
+//     });
+//   } finally {
+//     setLoading(false);
+//   }
+// };
+
+const handleSubmit = async (e) => {
   e.preventDefault();
 
   const newErrors = validateForm();
@@ -62,24 +108,24 @@ const API_URL = import.meta.env.VITE_API_URL;
 
   try {
     const response = await axios.post(
-      `${API_URL}/api/v10/create-vendor`,
+      `${API_URL}/api/v1/vendor-admin-signup`,
       {
-        name,
+        full_name: name,
         email,
         password,
+        role: "vendor", // change to "vendor" if this page is for vendor signup
       }
     );
 
-    console.log(response.data);
-
-    if (response.data.success) {
-      alert("Vendor registered successfully");
+    if (response.data.success || response.status === 201) {
+      alert(response.data.message);
 
       setName("");
       setEmail("");
       setPassword("");
+      setErrors({});
 
-      navigate("/dashboard");
+      navigate("/vendor-admin-login");
     }
   } catch (error) {
     console.error(error);
@@ -93,7 +139,6 @@ const API_URL = import.meta.env.VITE_API_URL;
     setLoading(false);
   }
 };
-
  
   const handleGoogleSuccess = async (credentialResponse) => {
     console.log("Google Token:", credentialResponse.credential);
@@ -154,6 +199,18 @@ const API_URL = import.meta.env.VITE_API_URL;
             <button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-bold py-3 rounded-lg transition-all shadow-lg">
               {loading ? 'Creating Account...' : 'Sign Up'}
             </button>
+
+             <div className="text-center mt-1">
+            <p className="text-gray-600 text-sm">
+              Already have an account?{" "}
+              <Link
+                to="/vendor-admin-login"
+                className="text-gray-800 hover:underline font-medium"
+              >
+                Login
+              </Link>
+            </p>
+          </div>
 
             {/* --- VISUAL SEPARATOR --- */}
             <div className="relative flex items-center justify-center my-6">

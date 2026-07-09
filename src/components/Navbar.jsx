@@ -16,7 +16,7 @@ const Navbar = () => {
     { name: 'LOGIN', href: '/customer-login' },
     { name: 'Refer', href: '#' },
     { name: 'CUSTOMER REGISTER', href: '/customer-register' },
-    { name: 'VENDOR REGISTER', href: '/signup' },
+    { name: 'VENDOR REGISTER', href: '/vendor-admin-signup' },
   ];
 
   const cartItems = useSelector(

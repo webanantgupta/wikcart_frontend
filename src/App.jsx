@@ -25,6 +25,7 @@ import Detailes from './pages/Detailes';
 import AddToCart from './pages/AddToCart';
 import HeroSection from './components/HeroSection';
 import ScrollToTop from './common/ScrollToTop';
+import VendorLogin from './components/VendorLogin';
 
 
 
@@ -94,8 +95,10 @@ function App() {
            }/>
 
 <Route path="/addtocart" element={<AddToCart />} />
-        <Route path="/signup" element={<VendorSignup />} />
 
+        <Route path="/vendor-admin-signup" element={<VendorSignup />} />
+
+<Route path='/vendor-admin-login' element={<VendorLogin/>}/>
         {/* Protected Routes - Dashboard Layout */}
         {/* Dashboard */}
         <Route

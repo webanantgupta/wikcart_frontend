@@ -64,75 +64,9 @@ export default function AddProduct() {
     setUploadedFiles(prev => ({ ...prev, gallery: [...prev.gallery, ...files] }));
   };
 
-  // --- API INTEGRATION ---
 
 
-//   const handleSave = async () => {
-//   setLoading(true);
 
-//   try {
-//     const data = new FormData();
-
-//     // --- 1. Map text fields to match Backend keys ---
-//     data.append('name', formData.name);
-//     data.append('category', formData.category);
-//     data.append('brand', formData.brand);
-//     data.append('unit', formData.unit);
-//     data.append('product_condition', formData.condition); // changed key
-//     data.append('product_type', formData.productType);    // changed key
-//     data.append('purchase_price', formData.purchasePrice); // changed key
-//     data.append('unit_price', formData.unitPrice);         // changed key
-//     data.append('quantity', formData.quantity);
-//     data.append('sku', formData.sku);
-//     data.append('discount', formData.discount);
-//     data.append('discount_type', formData.discountType);   // changed key
-//     data.append('summary', formData.summary);
-//     data.append('description', formData.description);
-//     data.append('youtube_link', formData.youtubeLink);     // changed key
-//     data.append('meta_title', formData.metaTitle);         // changed key
-//     data.append('meta_description', formData.metaDescription); // changed key
-//     data.append('low_stock_quantity', formData.lowStockQuantity); // changed key
-//     data.append('purchase_quantity_minimum', formData.minQuantity); // changed key
-//     data.append('purchase_quantity_maximum', formData.maxQuantity); // changed key
-
-//     // --- 2. Tags (Backend requires JSON string) ---
-//     data.append('tags', JSON.stringify([])); // Add actual tags here if you have them
-
-//     // --- 3. Booleans (Matches backend key names) ---
-//     data.append('featured', toggles.featured);
-//     data.append('refundable', toggles.refundable);
-//     data.append('authentic', toggles.authentic);
-//     data.append('warranty', toggles.warranty);
-//     data.append('attachment_on_purchase', toggles.attachmentOnPurchase);
-//     data.append('cash_on_delivery', formData.codType === 'anywhere'); 
-
-//     // --- 4. Files (Must match your Multer config names) ---
-//     // Note: Your backend uses 'thumbnail_image', 'gallery_images', etc.
-//     if (uploadedFiles.thumbnail) {
-//       data.append('thumbnail_image', uploadedFiles.thumbnail);
-//     }
-//     if (uploadedFiles.pdf) {
-//       data.append('pdf_specification', uploadedFiles.pdf);
-//     }
-//     if (uploadedFiles.metaImage) {
-//       data.append('meta_image', uploadedFiles.metaImage);
-//     }
-//     uploadedFiles.gallery.forEach((file) => {
-//       data.append('gallery_images', file);
-//     });
-
-//     const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/v2/create-product`, data, {
-//       headers: { 'Content-Type': 'multipart/form-data' },
-//     });
-
-//     alert('Product created successfully!');
-//   } catch (error) {
-//     const errorMessage = error.response?.data?.message || "Something went wrong";
-//     alert(`Error: ${errorMessage}`);
-//   } finally {
-//     setLoading(false);
-//   }
-// };
 
 const handleSave = async () => {
   setLoading(true);
@@ -273,11 +207,13 @@ const handleSave = async () => {
     // =========================
     // API CALL
     // =========================
+    const token = localStorage.getItem("token");
     const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/api/v2/create-product`,
       data,
       {
         headers: {
+            Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       }

@@ -16,55 +16,140 @@ const CustomerViewProducts = () => {
 const API_URL = import.meta.env.VITE_API_URL;
 
   // Fetch products using axios
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(`${API_URL}/api/v2/get-products`);
-        if (response.data.success && response.data.data) {
-          setProducts(response.data.data);
-          setFilteredProducts(response.data.data);
-        }
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchProducts = async () => {
+  //     try {
+  //       setLoading(true);
+  //       const response = await axios.get(`${API_URL}/api/v2/all-products`);
+  //       console.log(response);
+        
+  //       if (response.data.success && response.data.data) {
+  //         console.log(response.data.data.fields);
+          
+  //         setProducts(response.data.data.fields);
+  //         setFilteredProducts(response.data.data);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching products:', error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    fetchProducts();
-  }, []);
+  //   fetchProducts();
+  // }, []);
+
+  useEffect(() => {
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+
+      const response = await axios.get(`${API_URL}/api/v2/all-products`);
+
+      console.log("API Response:", response.data);
+
+      let productList = [];
+
+      // Case 1: data is directly an array
+      if (Array.isArray(response.data.data)) {
+        productList = response.data.data;
+      }
+
+      // Case 2: data.fields is an array
+      else if (Array.isArray(response.data.data?.fields)) {
+        productList = response.data.data.fields;
+      }
+
+      // Case 3: data.products is an array
+      else if (Array.isArray(response.data.data?.products)) {
+        productList = response.data.data.products;
+      }
+
+      setProducts(productList);
+      setFilteredProducts(productList);
+
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      setProducts([]);
+      setFilteredProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchProducts();
+}, [API_URL]);
 
   // Filter and sort products
-  useEffect(() => {
-    let filtered = [...products];
+//   useEffect(() => {
+//     let filtered = [...products];
 
-    // Search filter
-    if (searchTerm) {
-      filtered = filtered.filter(
-        (p) =>
-          p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          p.brand?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
+//     // Search filter
+//     // if (searchTerm) {
+//     //   filtered = filtered.filter(
+//     //     (p) =>
+//     //       p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+//     //       p.brand?.toLowerCase().includes(searchTerm.toLowerCase())
+//     //   );
+//     // }
+//     if (searchTerm) {
+//   filtered = filtered.filter((p) =>
+//     (p.name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+//     (p.brand || "").toLowerCase().includes(searchTerm.toLowerCase())
+//   );
+// }
 
-    // Category filter
-    if (selectedCategory !== 'all') {
-      filtered = filtered.filter((p) => p.category === selectedCategory);
-    }
+//     // Category filter
+//     if (selectedCategory !== 'all') {
+//       filtered = filtered.filter((p) => p.category === selectedCategory);
+//     }
 
-    // Sorting
-    if (sortBy === 'price-low') {
-      filtered.sort((a, b) => parseFloat(a.unit_price) - parseFloat(b.unit_price));
-    } else if (sortBy === 'price-high') {
-      filtered.sort((a, b) => parseFloat(b.unit_price) - parseFloat(a.unit_price));
-    }
+//     // Sorting
+//     if (sortBy === 'price-low') {
+//       filtered.sort((a, b) => parseFloat(a.unit_price) - parseFloat(b.unit_price));
+//     } else if (sortBy === 'price-high') {
+//       filtered.sort((a, b) => parseFloat(b.unit_price) - parseFloat(a.unit_price));
+//     }
 
-    setFilteredProducts(filtered);
-  }, [searchTerm, selectedCategory, sortBy, products]);
+//     setFilteredProducts(filtered);
+//   }, [searchTerm, selectedCategory, sortBy, products]);
+
+useEffect(() => {
+  let filtered = [...(products || [])];
+
+  if (searchTerm) {
+    filtered = filtered.filter((p) =>
+      (p.name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (p.brand || "").toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }
+
+  if (selectedCategory !== "all") {
+    filtered = filtered.filter((p) => p.category === selectedCategory);
+  }
+
+  if (sortBy === "price-low") {
+    filtered.sort(
+      (a, b) => Number(a.unit_price || 0) - Number(b.unit_price || 0)
+    );
+  }
+
+  if (sortBy === "price-high") {
+    filtered.sort(
+      (a, b) => Number(b.unit_price || 0) - Number(a.unit_price || 0)
+    );
+  }
+
+  setFilteredProducts(filtered);
+}, [products, searchTerm, selectedCategory, sortBy]);
 
   // Get unique categories
-  const categories = ['all', ...new Set(products.map((p) => p.category).filter(Boolean))];
+  // const categories = ['all', ...new Set(products.map((p) => p.category).filter(Boolean))];
+const categories = [
+  "all",
+  ...new Set((products || []).map((p) => p.category).filter(Boolean)),
+];
+
 
   // Calculate discount
   const getDiscount = (product) => {
@@ -314,7 +399,7 @@ const navigate = useNavigate();
         )}
 
         {/* Empty State */}
-        {!loading && filteredProducts.length === 0 && (
+        {/* {!loading && filteredProducts.length === 0 && (
           <div className="flex flex-col items-center justify-center py-12">
             <svg className="w-16 h-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -322,7 +407,25 @@ const navigate = useNavigate();
             <h3 className="text-lg font-semibold text-gray-900">No Products Found</h3>
             <p className="text-gray-600 text-sm mt-2">Try adjusting your search or filters</p>
           </div>
-        )}
+        )} */}
+
+        {!loading && filteredProducts?.length > 0 && (
+  <div
+    className={`grid gap-6 ${
+      viewMode === "grid-4"
+        ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+        : viewMode === "grid-3"
+        ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+        : viewMode === "grid-2"
+        ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-2"
+        : "grid-cols-1"
+    }`}
+  >
+    {(filteredProducts || []).map((product) => (
+      <ProductCard key={product.id} product={product} />
+    ))}
+  </div>
+)}
 
         {/* Products Grid */}
         {!loading && filteredProducts.length > 0 && (

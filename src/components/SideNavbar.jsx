@@ -8,7 +8,7 @@ import axios from 'axios';
 const SideNavbar = () => {
   // Track which menu is currently open by its label
   const [openMenu, setOpenMenu] = useState(null);
-  const [logoName, setLogoName] = useState("Kartly");
+  const [logoName, setLogoName] = useState("Wikcart");
   const navigate = useNavigate(); // ADD THIS
 
   useEffect(() => {

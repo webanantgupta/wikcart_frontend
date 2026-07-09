@@ -214,6 +214,8 @@ const navigate = useNavigate();
               {loading ? "Logging in..." : "Log In"}
             </button>
 
+
+
             {/* --- VISUAL SEPARATOR --- */}
             <div className="relative flex items-center justify-center my-6">
               <div className="border-t border-gray-200 w-full"></div>
