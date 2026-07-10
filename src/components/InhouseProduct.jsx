@@ -8,20 +8,33 @@ const InhouseProduct = () => {
   const [search, setSearch] = useState("");
 
   // FETCH API
-  const fetchProducts = async () => {
-    try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/v2/get-products`
-      );
+const fetchProducts = async () => {
+  try {
+    setLoading(true);
 
-      setProducts(res.data.data);
-      setFilteredProducts(res.data.data);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-    }
-  };
+    const token = localStorage.getItem("token");
+
+    console.log("Stored Token:", token);
+
+    const res = await axios.get(
+      `${import.meta.env.VITE_API_URL}/api/v2/get-products`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log(res.data);
+
+    setProducts(res.data.data || []);
+    setFilteredProducts(res.data.data || []);
+  } catch (error) {
+    console.log("API Error:", error.response?.data);
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     fetchProducts();
