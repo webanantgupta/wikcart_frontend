@@ -1,6 +1,7 @@
 import { ToastContainer } from 'react-toastify';
 import { BrowserRouter, Route, Routes } from "react-router-dom"
 import Login from "./components/Login"
+import AdminLogin from './components/AdminLogin';
 import VendorSignup from "./components/VendorSignup"
 import Dashboard from "./components/Dashboard"
 import SideNavbar from "./components/SideNavbar"
@@ -97,6 +98,7 @@ function App() {
 <Route path="/addtocart" element={<AddToCart />} />
 
         <Route path="/vendor-admin-signup" element={<VendorSignup />} />
+        <Route path='/admin-login' element={<AdminLogin/>}/>
 
 <Route path='/vendor-admin-login' element={<VendorLogin/>}/>
         {/* Protected Routes - Dashboard Layout */}

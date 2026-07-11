@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const VendorLogin = () => {
@@ -143,6 +143,18 @@ const VendorLogin = () => {
                     >
                         {loading ? "Logging In..." : "Login"}
                     </button>
+
+                      <div className="text-center mt-1">
+                                <p className="text-gray-600 text-sm">
+                                  Admin login?{" "}
+                                  <Link
+                                    to="/admin-login"
+                                    className="text-gray-800 hover:underline font-medium"
+                                  >
+                                    Login
+                                  </Link>
+                                </p>
+                              </div>
 
                 </form>
 
